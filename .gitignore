@@ -1,4 +1,3 @@
-# Python bytecode
 __pycache__/
 *.pyc
 *.pyo
@@ -10,39 +9,20 @@ dist/
 build/
 *.manifest
 *.spec
-
-# Virtual Environment (Python venv)
 venv/
 .env/
 *.env
-
-# Jupyter Notebooks checkpoints
 .ipynb_checkpoints/
-
-# VSCode settings
 .vscode/
-
-# PyCharm settings
 .idea/
-
-# Docker
 docker-compose.override.yml
 docker-compose.yml
 *.log
-
-
-# Environment-specific files
 *.sqlite
 *.db
-
-# IDE & Editor backups
 *~ 
 *.swp
-
-# Miscellaneous
 *.log
 *.bak
 *.tmp
-
-# OS-specific files
 
