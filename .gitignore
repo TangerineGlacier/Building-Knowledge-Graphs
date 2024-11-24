@@ -30,8 +30,6 @@ docker-compose.override.yml
 docker-compose.yml
 *.log
 
-# Neo4j
-data/
 
 # Environment-specific files
 *.sqlite

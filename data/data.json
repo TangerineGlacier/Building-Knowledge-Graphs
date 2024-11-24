@@ -1,0 +1,24 @@
+{
+    "users": [
+      { "id": 1, "name": "Alice", "likes": ["Technology", "Science"] },
+      { "id": 2, "name": "Bob", "likes": ["Art", "Music"] },
+      { "id": 3, "name": "Charlie", "likes": ["Sports", "Fitness"] }
+    ],
+    "categories": [
+      { "name": "Technology" },
+      { "name": "Science" },
+      { "name": "Art" },
+      { "name": "Music" },
+      { "name": "Sports" },
+      { "name": "Fitness" }
+    ],
+    "events": [
+      { "id": 101, "name": "Tech Conference", "location": "NYC", "category": "Technology" },
+      { "id": 102, "name": "Art Workshop", "location": "SF", "category": "Art" },
+      { "id": 103, "name": "Science Fair", "location": "Chicago", "category": "Science" },
+      { "id": 104, "name": "Music Festival", "location": "LA", "category": "Music" },
+      { "id": 105, "name": "Fitness Expo", "location": "Denver", "category": "Fitness" },
+      { "id": 106, "name": "Sports Meet", "location": "Houston", "category": "Sports" }
+    ]
+  }
+  
