@@ -13,6 +13,11 @@ To improve how businesses manage customer relationships by making the CRM smarte
 - **Flexible API**: Built with FastAPI to provide a set of RESTful endpoints for managing customer data and interacting with the graph database.
 - **Zero-shot Classification**: Utilizes Hugging Face's transformer models for zero-shot classification to classify queries into categories like "customer," "opportunity," and "interaction."
 
+
+### Why Did I Choose a Zero-Shot Classifier from Hugging Face?
+
+I chose the zero-shot classifier from Hugging Face because it can understand and classify text into different categories without needing to be trained on specific examples. This makes it easier to handle new types of queries on the fly, without requiring additional data or training. It allows the CRM to quickly adapt to different requests and understand user input more naturally.
+
 ## Installation
 
 ### Prerequisites
@@ -52,10 +57,55 @@ Create a `.env` file in the root directory and add the following credentials:
 ```env
 NEO4J_URI=neo4j://localhost:7687
 NEO4J_USERNAME=neo4j
-NEO4J_PASSWORD=password
+NEO4J_PASSWORD=your_password
 ```
 
 Make sure your Neo4j instance is running and accessible with the provided credentials.
+
+Here’s how you can run Neo4j for your project:
+
+### How to Run Neo4j?
+The easiest way to run Neo4j is through Docker. Use the following commands to get it up and running:
+
+- Pull the Neo4j Docker image:
+     ```bash
+     docker pull neo4j:latest
+     ```
+
+- Run Neo4j with Docker:
+     ```bash
+     docker run \
+       --name neo4j \
+       -d \
+       -p 7474:7474 \
+       -p 7687:7687 \
+       -e NEO4J_AUTH=neo4j/your_password \
+       neo4j:latest
+     ```
+This will start Neo4j with the following:
+
+**Ports**: 
+- `7474` for web browser access to Neo4j.
+- `7687` for connecting to Neo4j via the Bolt protocol.
+- **Authentication**: Default username is `neo4j`, and the password is `password`.
+
+3. **Access Neo4j Browser**:
+   Open your browser and navigate to `http://localhost:7474`. 
+   - Log in with the username `neo4j` and the password `your_password` (or whichever password you set).
+
+4. **Using Neo4j with the FastAPI App**:
+   Ensure your FastAPI application connects to Neo4j by setting up the connection details in your `.env` file:
+   ```env
+   NEO4J_URI=neo4j://localhost:7687
+   NEO4J_USERNAME=neo4j
+   NEO4J_PASSWORD=password
+   ```
+
+   This will allow your FastAPI application to communicate with the Neo4j database seamlessly.
+
+Now your Neo4j instance should be ready to use, and you can start interacting with the database either through the browser or via the FastAPI endpoints.
+
+
 
 ## API Endpoints
 
