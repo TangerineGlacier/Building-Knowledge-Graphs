@@ -1,0 +1,41 @@
+{
+    "customers": [
+        {
+            "id": 1,
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "phone": "123-456-7890"
+        }
+    ],
+    "opportunities": [
+        {
+            "id": 1,
+            "name": "Product Purchase",
+            "value": 1000,
+            "status": "Open",
+            "customer_id": 1
+        }
+    ],
+    "interactions": [
+        {
+            "id": 1,
+            "date": "2024-11-24",
+            "notes": "Follow-up call",
+            "customer_id": 1,
+            "sales_rep_id": 1
+        }
+    ],
+    "products": [
+        {
+            "name": "Product A",
+            "opportunities": [1]
+        }
+    ],
+    "sales_reps": [
+        {
+            "id": 1,
+            "name": "Alice Smith",
+            "email": "alice.smith@example.com"
+        }
+    ]
+}

@@ -6,7 +6,7 @@ from neo4j import GraphDatabase
 # Load environment variables from the .env file
 load_dotenv()
 
-class KnowledgeGraph:
+class CRMDatastore:
 
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
@@ -16,15 +16,18 @@ class KnowledgeGraph:
 
     def create_schema(self):
         with self.driver.session() as session:
-            # Create constraints if they don't already exist
+            # Create constraints to ensure unique data for customers and opportunities
             session.run("""
-                CREATE CONSTRAINT IF NOT EXISTS FOR (u:User) REQUIRE u.id IS UNIQUE;
+                CREATE CONSTRAINT IF NOT EXISTS FOR (c:Customer) REQUIRE c.id IS UNIQUE;
             """)
             session.run("""
-                CREATE CONSTRAINT IF NOT EXISTS FOR (e:Event) REQUIRE e.id IS UNIQUE;
+                CREATE CONSTRAINT IF NOT EXISTS FOR (o:Opportunity) REQUIRE o.id IS UNIQUE;
             """)
             session.run("""
-                CREATE CONSTRAINT IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE;
+                CREATE CONSTRAINT IF NOT EXISTS FOR (p:Product) REQUIRE p.name IS UNIQUE;
+            """)
+            session.run("""
+                CREATE CONSTRAINT IF NOT EXISTS FOR (s:SalesRep) REQUIRE s.id IS UNIQUE;
             """)
 
     def populate_graph_from_json(self, json_file):
@@ -32,48 +35,82 @@ class KnowledgeGraph:
             data = json.load(file)
 
         with self.driver.session() as session:
-            # Create categories (using MERGE to avoid duplicates)
-            for category in data["categories"]:
+            # Create Customers
+            for customer in data["customers"]:
                 session.run(
-                    "MERGE (c:Category {name: $name})",
-                    name=category["name"]
+                    "MERGE (c:Customer {id: $id})"
+                    "ON CREATE SET c.name = $name, c.email = $email, c.phone = $phone",
+                    id=customer["id"], name=customer["name"], email=customer["email"], phone=customer["phone"]
                 )
 
-            # Create events and associate with categories
-            for event in data["events"]:
+            # Create Opportunities and associate with customers
+            for opportunity in data["opportunities"]:
                 session.run(
                     """
-                    MERGE (e:Event {id: $id})
-                    ON CREATE SET e.name = $name, e.location = $location
-                    WITH e
-                    MATCH (c:Category {name: $category})
-                    MERGE (e)-[:BELONGS_TO]->(c)
+                    MERGE (o:Opportunity {id: $id})
+                    ON CREATE SET o.name = $name, o.value = $value, o.status = $status
+                    WITH o
+                    MATCH (c:Customer {id: $customer_id})
+                    MERGE (o)-[:BELONGS_TO]->(c)
                     """,
-                    id=event["id"], name=event["name"], location=event["location"], category=event["category"]
+                    id=opportunity["id"], name=opportunity["name"], value=opportunity["value"], 
+                    status=opportunity["status"], customer_id=opportunity["customer_id"]
                 )
 
-            # Create users and associate with categories
-            for user in data["users"]:
+            # Create Interactions and associate with customers and sales reps
+            for interaction in data["interactions"]:
                 session.run(
-                    "MERGE (u:User {id: $id})",
-                    id=user["id"]
+                    """
+                    MERGE (i:Interaction {id: $id})
+                    ON CREATE SET i.date = $date, i.notes = $notes
+                    WITH i
+                    MATCH (c:Customer {id: $customer_id}), (s:SalesRep {id: $sales_rep_id})
+                    MERGE (i)-[:WITH]->(c)
+                    MERGE (i)-[:CONDUCTED_BY]->(s)
+                    """,
+                    id=interaction["id"], date=interaction["date"], notes=interaction["notes"], 
+                    customer_id=interaction["customer_id"], sales_rep_id=interaction["sales_rep_id"]
                 )
-                for liked_category in user["likes"]:
+
+            # Create Products and associate with opportunities
+            for product in data["products"]:
+                session.run(
+                    "MERGE (p:Product {name: $name})",
+                    name=product["name"]
+                )
+                for opportunity_id in product["opportunities"]:
                     session.run(
                         """
-                        MATCH (u:User {id: $user_id}), (c:Category {name: $category})
-                        MERGE (u)-[:LIKES]->(c)
+                        MATCH (o:Opportunity {id: $opportunity_id}), (p:Product {name: $product_name})
+                        MERGE (o)-[:INVOLVES]->(p)
                         """,
-                        user_id=user["id"], category=liked_category
+                        opportunity_id=opportunity_id, product_name=product["name"]
                     )
 
-    def query_recommendations(self, user_id):
+            # Create Sales Representatives
+            for sales_rep in data["sales_reps"]:
+                session.run(
+                    "MERGE (s:SalesRep {id: $id})"
+                    "ON CREATE SET s.name = $name, s.email = $email",
+                    id=sales_rep["id"], name=sales_rep["name"], email=sales_rep["email"]
+                )
+
+    def query_opportunities_for_customer(self, customer_id):
         with self.driver.session() as session:
             query = """
-            MATCH (u:User {id: $user_id})-[:LIKES]->(c:Category)<-[:BELONGS_TO]-(e:Event)
-            RETURN e.name AS Event, e.location AS Location
+            MATCH (c:Customer {id: $customer_id})-[:BELONGS_TO]->(o:Opportunity)
+            RETURN o.name AS Opportunity, o.value AS Value, o.status AS Status
             """
-            results = session.run(query, user_id=user_id)
+            results = session.run(query, customer_id=customer_id)
+            return [record.data() for record in results]
+
+    def query_interactions_for_customer(self, customer_id):
+        with self.driver.session() as session:
+            query = """
+            MATCH (c:Customer {id: $customer_id})<-[:WITH]-(i:Interaction)-[:CONDUCTED_BY]->(s:SalesRep)
+            RETURN i.date AS Date, i.notes AS Notes, s.name AS SalesRep
+            """
+            results = session.run(query, customer_id=customer_id)
             return [record.data() for record in results]
 
 
@@ -83,26 +120,35 @@ if __name__ == "__main__":
     USERNAME = os.getenv("NEO4J_USER")
     PASSWORD = os.getenv("NEO4J_PASSWORD")
 
-    # Initialize the graph
-    graph = KnowledgeGraph(URI, USERNAME, PASSWORD)
+    # Initialize the CRM datastore
+    crm = CRMDatastore(URI, USERNAME, PASSWORD)
 
     # Create schema
     print("Creating schema...")
-    graph.create_schema()
+    crm.create_schema()
 
     # Populate graph with data from JSON
     print("Populating graph with data from JSON...")
-    graph.populate_graph_from_json("data/data.json")
+    crm.populate_graph_from_json("data/crm_data.json")
 
-    # Query for recommendations
-    user_id = 1  # Replace with a valid user ID
-    print(f"Fetching recommendations for User {user_id}...")
-    recommendations = graph.query_recommendations(user_id)
+    # Query for opportunities of a customer
+    customer_id = 1  # Replace with a valid customer ID
+    print(f"Fetching opportunities for Customer {customer_id}...")
+    opportunities = crm.query_opportunities_for_customer(customer_id)
 
-    # Print results
-    print(f"Recommendations for User {user_id}:")
-    for rec in recommendations:
-        print(f"- Event: {rec['Event']} at {rec['Location']}")
+    # Print opportunities
+    print(f"Opportunities for Customer {customer_id}:")
+    for opportunity in opportunities:
+        print(f"- Opportunity: {opportunity['Opportunity']} | Value: {opportunity['Value']} | Status: {opportunity['Status']}")
+
+    # Query for interactions of a customer
+    print(f"Fetching interactions for Customer {customer_id}...")
+    interactions = crm.query_interactions_for_customer(customer_id)
+
+    # Print interactions
+    print(f"Interactions for Customer {customer_id}:")
+    for interaction in interactions:
+        print(f"- Date: {interaction['Date']} | Notes: {interaction['Notes']} | Sales Rep: {interaction['SalesRep']}")
 
     # Close the connection
-    graph.close()
+    crm.close()
