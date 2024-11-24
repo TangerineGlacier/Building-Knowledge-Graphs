@@ -4,38 +4,143 @@
             "id": 1,
             "name": "John Doe",
             "email": "john.doe@example.com",
-            "phone": "123-456-7890"
+            "phone": "+1234567890"
+        },
+        {
+            "id": 2,
+            "name": "Jane Smith",
+            "email": "jane.smith@example.com",
+            "phone": "+1987654321"
+        },
+        {
+            "id": 3,
+            "name": "Alice Johnson",
+            "email": "alice.johnson@example.com",
+            "phone": "+1122334455"
+        },
+        {
+            "id": 4,
+            "name": "Bob Brown",
+            "email": "bob.brown@example.com",
+            "phone": "+1098765432"
+        },
+        {
+            "id": 5,
+            "name": "Emily Davis",
+            "email": "emily.davis@example.com",
+            "phone": "+1444556677"
         }
     ],
     "opportunities": [
         {
             "id": 1,
-            "name": "Product Purchase",
-            "value": 1000,
+            "name": "Big Sale Opportunity",
+            "value": 10000,
             "status": "Open",
             "customer_id": 1
+        },
+        {
+            "id": 2,
+            "name": "Small Business Sale",
+            "value": 2000,
+            "status": "Closed",
+            "customer_id": 2
+        },
+        {
+            "id": 3,
+            "name": "Enterprise Solution",
+            "value": 20000,
+            "status": "Open",
+            "customer_id": 3
+        },
+        {
+            "id": 4,
+            "name": "Retailer Partnership",
+            "value": 8000,
+            "status": "Open",
+            "customer_id": 4
+        },
+        {
+            "id": 5,
+            "name": "Software Upgrade",
+            "value": 5000,
+            "status": "Closed",
+            "customer_id": 5
         }
     ],
     "interactions": [
         {
             "id": 1,
-            "date": "2024-11-24",
-            "notes": "Follow-up call",
+            "date": "2024-11-20",
+            "notes": "Initial contact, discussed requirements.",
             "customer_id": 1,
+            "sales_rep_id": 1
+        },
+        {
+            "id": 2,
+            "date": "2024-11-21",
+            "notes": "Follow-up meeting, pricing discussed.",
+            "customer_id": 1,
+            "sales_rep_id": 2
+        },
+        {
+            "id": 3,
+            "date": "2024-11-22",
+            "notes": "Demo session conducted.",
+            "customer_id": 2,
+            "sales_rep_id": 1
+        },
+        {
+            "id": 4,
+            "date": "2024-11-23",
+            "notes": "Contract signing and negotiation.",
+            "customer_id": 3,
+            "sales_rep_id": 3
+        },
+        {
+            "id": 5,
+            "date": "2024-11-24",
+            "notes": "Product delivery scheduled.",
+            "customer_id": 4,
+            "sales_rep_id": 2
+        },
+        {
+            "id": 6,
+            "date": "2024-11-25",
+            "notes": "Customer support follow-up.",
+            "customer_id": 5,
             "sales_rep_id": 1
         }
     ],
     "products": [
         {
             "name": "Product A",
-            "opportunities": [1]
+            "opportunities": [1, 2]
+        },
+        {
+            "name": "Product B",
+            "opportunities": [3, 4]
+        },
+        {
+            "name": "Product C",
+            "opportunities": [5]
         }
     ],
     "sales_reps": [
         {
             "id": 1,
-            "name": "Alice Smith",
-            "email": "alice.smith@example.com"
+            "name": "Sales Rep 1",
+            "email": "sales1@example.com"
+        },
+        {
+            "id": 2,
+            "name": "Sales Rep 2",
+            "email": "sales2@example.com"
+        },
+        {
+            "id": 3,
+            "name": "Sales Rep 3",
+            "email": "sales3@example.com"
         }
     ]
 }
