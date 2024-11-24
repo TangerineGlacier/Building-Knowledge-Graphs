@@ -1,1 +1,1 @@
-# Building Knowledge Graphs using Neo4j and 
+# Building Knowledge Graphs using Neo4j and Python
