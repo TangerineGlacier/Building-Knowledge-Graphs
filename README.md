@@ -31,8 +31,8 @@ Before running the project, ensure you have the following dependencies installed
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/smart-crm-nlp-neo4j.git
-cd smart-crm-nlp-neo4j
+git clone https://github.com/TangerineGlacier/Smart-CRM-with-NLP-and-Neo4.git
+cd Smart-CRM-with-NLP-and-Neo4
 ```
 
 ### Install Dependencies
