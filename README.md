@@ -32,7 +32,7 @@ Before running the project, ensure you have the following dependencies installed
 
 ```bash
 https://github.com/TangerineGlacier/Smart-CRM-with-NLP-and-Neo4j.git
-cd Smart-CRM-with-NLP-and-Neo4
+cd Smart-CRM-with-NLP-and-Neo4j
 ```
 
 ### Install Dependencies
