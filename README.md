@@ -221,6 +221,7 @@ You can also interact with the APIs at `http://localhost:8000/docs`.
 4. **Data Ingestion and Transformation**: Implement functionality to ingest raw, unstructured data, automatically map it to the schema, and store it in Neo4j for efficient querying and analysis.
 
 5. **Analytics**: Build analytics features that allow users to extract valuable insights from CRM data, such as customer trends, opportunities, and interactions, to make data-driven decisions and drive business growth.
+
 ## Contact
 
 - [Sreevatsan](https://github.com/TangerineGlacier)
